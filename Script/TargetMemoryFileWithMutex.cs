@@ -233,17 +233,6 @@ using System.Threading;
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
     public void SetAsBytes(byte [] bytes)
     {
         WaitUntilMutexAllowIt(() =>
@@ -308,33 +297,7 @@ using System.Threading;
                 ms.Write(buffer, 0, count);
             return ms.ToArray();
         }
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 

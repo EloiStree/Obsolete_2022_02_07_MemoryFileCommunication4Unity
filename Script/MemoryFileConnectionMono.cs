@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,18 @@ public class MemoryFileConnectionMono : MonoBehaviour
 
     public void GetConnection(out MemoryFileConnection connection) { connection = m_connection; }
     public MemoryFileConnection GetConnection() { return m_connection; }
+    public MemoryFileConnection Connection
+    {
+        get { return m_connection; }
+        set { m_connection = value; }
+    }
+    
+
+    void Reset()
+    {
+        Connection.m_setupInfo.m_fileName = Guid.NewGuid().ToString();
+
+    }
 
 }
 [System.Serializable]
@@ -36,10 +49,7 @@ public class MemoryFileConnectionMono : MonoBehaviour
         m_setupInfo.m_maxMemorySize = maxSize;
         m_connection = new TargetMemoryFileWithMutex(m_setupInfo);
     }
-    void Awake()
-    {
-        CheckThatConnectionExist();
-    }
+    
 
 
     public TargetMemoryFileWithMutex Connection() {
@@ -58,31 +68,31 @@ public class MemoryFileConnectionMono : MonoBehaviour
     {
         Connection().AppendTextAtStart(text);
     }
-    public void ReadText(out string text)
+    public void GetAsText(out string text)
     {
         Connection().TextRecovering(out  text, false);
     }
-    public void ReadTextAndFlush(out string text)
+    public void GetAsTextAndFlush(out string text)
     {
         Connection().TextRecovering(out  text, true);
     }
     
-    public void PushTexture2D(Texture2D texture)
+    public void SetAsTexture2D(Texture2D texture)
     {
         byte[] t = texture.EncodeToPNG();
         Connection().SetAsBytes(t);
     }
 
-    public void ReadBytes(out byte[] bytes)
+    public void GetAsBytes(out byte[] bytes)
     {
         Connection().BytesRecovering(out bytes, false);
     }
-    public void ReadBytesAndFlush(out byte[] bytes)
+    public void GetAsBytesAndFlush(out byte[] bytes)
     {
         Connection().BytesRecovering(out bytes, true);
     }
     [ContextMenu("Read Bytes")]
-    public void ReadBytesAsTexture2D(out Texture2D texture)
+    public void GetAsTexture2D(out Texture2D texture)
     {
         Connection().BytesRecovering(out byte[] bytes, false);
         texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
@@ -90,7 +100,7 @@ public class MemoryFileConnectionMono : MonoBehaviour
         texture.Apply();
     }
     [ContextMenu("Read Bytes And Flush")]
-    public void ReadBytesAsTexture2DAndFlush(out Texture2D texture)
+    public void GetAsTexture2DAndFlush(out Texture2D texture)
     {
         Connection().BytesRecovering(out byte[] bytes, true);
         texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
@@ -99,13 +109,19 @@ public class MemoryFileConnectionMono : MonoBehaviour
     }
 
 
-    public void SetMemoryToObjectAsJson<T>(T target) {
+    public void SetAsOjectInJsonFromat<T>(T target) {
         string json = JsonUtility.ToJson(target);
         SetText(json);
     }
-    public T GetInObjectFromJson<T>() {
-        ReadText(out string json);
+    public T GetInObjectFromJsonFormat<T>()
+    {
+        GetAsText(out string json);
         return JsonUtility.FromJson<T>(json);
+    }
+    public void  GetInObjectFromJsonFormat<T>(out T recovered)
+    {
+        GetAsText(out string json);
+        recovered= JsonUtility.FromJson<T>(json);
     }
 
 }
