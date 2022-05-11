@@ -18,9 +18,18 @@ public class MemoryFileConnectionMono : MonoBehaviour
 
     void Reset()
     {
+        Connection.m_setupInfo = new TargetMemoryFileWithMutexInfoWithFormat();
         Connection.m_setupInfo.m_fileName = Guid.NewGuid().ToString();
 
     }
+
+    public void SetAsTexture(Texture2D texture) => Connection.SetAsTexture2D(texture);
+    public void SetAsJson(object targetObject) => Connection.SetAsOjectInJsonFromat(targetObject);
+    public void SetAsText(string text) => Connection.SetText(text);
+    public void AppendTextAtStart(string text) => Connection.AppendTextAtEnd(text);
+    public void AppendTextAtEnd(string text) => Connection.AppendTextAtStart(text);
+    public void SetAsBytes(string text) => Connection.AppendTextAtStart(text);
+    public void Flush() => Connection.Flush();
 
 }
 [System.Serializable]
@@ -124,6 +133,10 @@ public class MemoryFileConnectionMono : MonoBehaviour
         recovered= JsonUtility.FromJson<T>(json);
     }
 
+    internal void Flush()
+    {
+        m_connection.ResetMemory();
+    }
 }
 
 
