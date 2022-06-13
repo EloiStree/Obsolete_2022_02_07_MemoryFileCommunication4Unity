@@ -118,7 +118,9 @@ using System.Threading;
             });
 
         }
-        private void MutexAppendText(string textToAdd)
+
+
+    private void MutexAppendText(string textToAdd)
         {
 
             string readText;
@@ -255,10 +257,8 @@ using System.Threading;
             }
             writer.Write( bytes, 0, bytes.Length);
         }
-
-
-
     }
+
 
     public void BytesRecovering(out byte [] bytes, bool removeContentAfter = true)
     {
@@ -282,8 +282,6 @@ using System.Threading;
                 MutexResetMemory();
             }
         }
-
-
     }
 
     public static byte[] ReadAllBytes( BinaryReader reader)
@@ -298,6 +296,7 @@ using System.Threading;
             return ms.ToArray();
         }
     }
+
 }
 
 

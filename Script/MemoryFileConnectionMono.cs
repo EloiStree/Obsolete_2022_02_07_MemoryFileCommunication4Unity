@@ -35,6 +35,7 @@ public class MemoryFileConnectionMono : MonoBehaviour
     public void AppendTextAtStart(string text) => Connection.AppendTextAtEnd(text);
     public void AppendTextAtEnd(string text) => Connection.AppendTextAtStart(text);
     public void SetAsBytes(string text) => Connection.AppendTextAtStart(text);
+    public void SetAsBytes(byte[] bytes) => Connection.SetAsBytes(bytes);
     public void Flush() => Connection.Flush();
 
 }
@@ -70,6 +71,9 @@ public class MemoryFileConnectionMono : MonoBehaviour
     public TargetMemoryFileWithMutex Connection() {
         CheckThatConnectionExist();
         return m_connection;
+    }
+    public void SetAsBytes(byte [] bytes) {
+        Connection().SetAsBytes(bytes);
     }
     public void SetText(string text)
     {
@@ -107,6 +111,7 @@ public class MemoryFileConnectionMono : MonoBehaviour
     {
         Connection().BytesRecovering(out bytes, false);
     }
+    
     public void GetAsBytesAndFlush(out byte[] bytes)
     {
         Connection().BytesRecovering(out bytes, true);
