@@ -22,7 +22,13 @@ public class MemoryFileConnectionMono : MonoBehaviour
         Connection.m_setupInfo.m_fileName = Guid.NewGuid().ToString();
 
     }
+    public void SetAsRenderTexture(in RenderTexture texture) {
+        Eloi.E_Texture2DUtility.RenderTextureToTexture2D(in texture, out Texture2D t);
+        Connection.SetAsTexture2D(t);
+    
+    }
 
+    public void SetAsTexture(RenderTexture texture) => Connection.SetAsTexture2D(texture);
     public void SetAsTexture(Texture2D texture) => Connection.SetAsTexture2D(texture);
     public void SetAsJson(object targetObject) => Connection.SetAsOjectInJsonFromat(targetObject);
     public void SetAsText(string text) => Connection.SetText(text);
@@ -85,7 +91,12 @@ public class MemoryFileConnectionMono : MonoBehaviour
     {
         Connection().TextRecovering(out  text, true);
     }
-    
+    public void SetAsTexture2D(RenderTexture renderTexture)
+    {
+        Eloi.E_Texture2DUtility.RenderTextureToTexture2D(in renderTexture, out Texture2D texture);
+        byte[] t = texture.EncodeToPNG();
+        Connection().SetAsBytes(t);
+    }
     public void SetAsTexture2D(Texture2D texture)
     {
         byte[] t = texture.EncodeToPNG();
