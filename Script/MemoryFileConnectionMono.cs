@@ -22,13 +22,20 @@ public class MemoryFileConnectionMono : MonoBehaviour
         Connection.m_setupInfo.m_fileName = Guid.NewGuid().ToString();
 
     }
+    public void SetAsRenderTexture(in RenderTexture texture) {
+        Eloi.E_Texture2DUtility.RenderTextureToTexture2D(in texture, out Texture2D t);
+        Connection.SetAsTexture2D(t);
+    
+    }
 
+    public void SetAsTexture(RenderTexture texture) => Connection.SetAsTexture2D(texture);
     public void SetAsTexture(Texture2D texture) => Connection.SetAsTexture2D(texture);
     public void SetAsJson(object targetObject) => Connection.SetAsOjectInJsonFromat(targetObject);
     public void SetAsText(string text) => Connection.SetText(text);
     public void AppendTextAtStart(string text) => Connection.AppendTextAtEnd(text);
     public void AppendTextAtEnd(string text) => Connection.AppendTextAtStart(text);
     public void SetAsBytes(string text) => Connection.AppendTextAtStart(text);
+    public void SetAsBytes(byte[] bytes) => Connection.SetAsBytes(bytes);
     public void Flush() => Connection.Flush();
 
 }
@@ -65,6 +72,9 @@ public class MemoryFileConnectionMono : MonoBehaviour
         CheckThatConnectionExist();
         return m_connection;
     }
+    public void SetAsBytes(byte [] bytes) {
+        Connection().SetAsBytes(bytes);
+    }
     public void SetText(string text)
     {
         Connection().SetText(text);
@@ -85,7 +95,12 @@ public class MemoryFileConnectionMono : MonoBehaviour
     {
         Connection().TextRecovering(out  text, true);
     }
-    
+    public void SetAsTexture2D(RenderTexture renderTexture)
+    {
+        Eloi.E_Texture2DUtility.RenderTextureToTexture2D(in renderTexture, out Texture2D texture);
+        byte[] t = texture.EncodeToPNG();
+        Connection().SetAsBytes(t);
+    }
     public void SetAsTexture2D(Texture2D texture)
     {
         byte[] t = texture.EncodeToPNG();
@@ -96,6 +111,7 @@ public class MemoryFileConnectionMono : MonoBehaviour
     {
         Connection().BytesRecovering(out bytes, false);
     }
+    
     public void GetAsBytesAndFlush(out byte[] bytes)
     {
         Connection().BytesRecovering(out bytes, true);
