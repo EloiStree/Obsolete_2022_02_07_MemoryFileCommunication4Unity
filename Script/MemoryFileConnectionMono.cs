@@ -24,12 +24,12 @@ public class MemoryFileConnectionMono : MonoBehaviour
     }
     public void SetAsRenderTexture(in RenderTexture texture) {
         Eloi.E_Texture2DUtility.RenderTextureToTexture2D(in texture, out Texture2D t);
-        Connection.SetAsTexture2D(t);
+        Connection.SetAsTexture2D_Heavy(t);
     
     }
 
-    public void SetAsTexture(RenderTexture texture) => Connection.SetAsTexture2D(texture);
-    public void SetAsTexture(Texture2D texture) => Connection.SetAsTexture2D(texture);
+   // public void SetAsTexture(RenderTexture texture) => Connection.SetAsTexture2D_Heavy(texture);
+    public void SetAsTexture(Texture2D texture) => Connection.SetAsTexture2D_Heavy(texture);
     public void SetAsJson(object targetObject) => Connection.SetAsOjectInJsonFromat(targetObject);
     public void SetAsText(string text) => Connection.SetText(text);
     public void AppendTextAtStart(string text) => Connection.AppendTextAtEnd(text);
@@ -95,13 +95,15 @@ public class MemoryFileConnectionMono : MonoBehaviour
     {
         Connection().TextRecovering(out  text, true);
     }
-    public void SetAsTexture2D(RenderTexture renderTexture)
+    public void SetAsTexture2D_Heavy(RenderTexture renderTexture)
     {
+        //THIS CODE CREATE MEMORY LEAK I TINK SO CHECK IF I IT RENDER TEXTURE TO TEXTURE OR SET BYTES
+        //IS IT POSSIBLE THAT IAM SET BYTES WITH TO HEAVY IMAGE AND SO PUSH DATA OUT OF MY ZONE OF MEMORY AND LEAK ?
         Eloi.E_Texture2DUtility.RenderTextureToTexture2D(in renderTexture, out Texture2D texture);
         byte[] t = texture.EncodeToPNG();
         Connection().SetAsBytes(t);
     }
-    public void SetAsTexture2D(Texture2D texture)
+    public void SetAsTexture2D_Heavy(Texture2D texture)
     {
         byte[] t = texture.EncodeToPNG();
         Connection().SetAsBytes(t);

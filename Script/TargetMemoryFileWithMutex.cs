@@ -104,8 +104,12 @@ using System.Threading;
                 writer.BaseStream.Write(new byte[m_maxMemorySize], 0, (int)m_maxMemorySize);
                 writer.BaseStream.Seek(0, System.IO.SeekOrigin.Begin);
 
-                //                    Thread.Sleep(1000);
-            }
+            //NOT TESTED
+                writer.Flush();
+                writer.Close();
+
+            //                    Thread.Sleep(1000);
+        }
         }
 
 
@@ -136,7 +140,11 @@ using System.Threading;
 
                 writer.Write(nexText);
 
-            }
+            //NotTested
+                writer.Flush();
+                writer.Close();
+
+        }
 
 
 
@@ -164,6 +172,9 @@ using System.Threading;
 
             writer.Write(nexText);
 
+            //NotTested
+            writer.Flush();
+            writer.Close();
         }
     }
 
@@ -190,8 +201,11 @@ using System.Threading;
                     nexText = nexText.Substring(0, m_maxMemorySize);
 
                 writer.Write(nexText);
+            //NotTested
+            writer.Flush();
+            writer.Close();
 
-            }
+        }
 
 
 
@@ -231,7 +245,9 @@ using System.Threading;
                     MutexResetMemory();
                 }
 
-            }
+                //NotTested
+                reader.Close();
+        }
         }
 
 
@@ -256,6 +272,10 @@ using System.Threading;
                 throw new Exception("Out of memory size");
             }
             writer.Write( bytes, 0, bytes.Length);
+
+            //NotTested
+            writer.Flush();
+            writer.Close();
         }
     }
 
@@ -281,20 +301,27 @@ using System.Threading;
             {
                 MutexResetMemory();
             }
+            //NotTested
+            reader.Close();
         }
     }
 
     public static byte[] ReadAllBytes( BinaryReader reader)
     {
         const int bufferSize = 4096;
+        byte[] result=new byte[0];
         using (var ms = new MemoryStream())
         {
             byte[] buffer = new byte[bufferSize];
             int count;
             while ((count = reader.Read(buffer, 0, buffer.Length)) != 0)
                 ms.Write(buffer, 0, count);
-            return ms.ToArray();
+            result= ms.ToArray();
+
+                ms.Dispose();
+                ms.Close();
         }
+            return result ;
     }
 
 }

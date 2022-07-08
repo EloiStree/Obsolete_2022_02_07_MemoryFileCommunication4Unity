@@ -23,6 +23,6 @@ public class MFC_Ex_PushObjectAsTexture : MonoBehaviour
         }
         m_textureToPush.SetPixels(c);
         m_textureToPush.Apply();
-        m_connection.GetConnection().SetAsTexture2D(m_textureToPush);
+        m_connection.GetConnection().SetAsTexture2D_Heavy(m_textureToPush);
         m_connection.GetConnection().GetAsTexture2D(out m_textureRecovered);    }
 }
