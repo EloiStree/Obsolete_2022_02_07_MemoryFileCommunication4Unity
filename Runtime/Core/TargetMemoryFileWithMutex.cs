@@ -7,6 +7,8 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading;
 
+namespace UnityMemoryFileCommunication4Unity
+{
 
 
     [System.Serializable]
@@ -31,12 +33,12 @@ using System.Threading;
         public Mutex m_memoryFileMutex;
         public string m_mutexFormatId = "Global\\{{{0}}}mutex";
 
-    public TargetMemoryFileWithMutex(TargetMemoryFileWithMutexInfo init):this(init.m_fileName, init.m_maxMemorySize)
-    {}
-    public TargetMemoryFileWithMutex(TargetMemoryFileWithMutexInfoWithFormat init):this(init.m_fileName,init.m_mutexFormatId, init.m_maxMemorySize)
-    {}
+        public TargetMemoryFileWithMutex(TargetMemoryFileWithMutexInfo init) : this(init.m_fileName, init.m_maxMemorySize)
+        { }
+        public TargetMemoryFileWithMutex(TargetMemoryFileWithMutexInfoWithFormat init) : this(init.m_fileName, init.m_mutexFormatId, init.m_maxMemorySize)
+        { }
 
-    public TargetMemoryFileWithMutex(string fileName, int maxMemorySize = 1000000)
+        public TargetMemoryFileWithMutex(string fileName, int maxMemorySize = 1000000)
         {
             m_fileName = fileName;
             m_maxMemorySize = maxMemorySize;
@@ -45,7 +47,7 @@ using System.Threading;
             m_memoryFile = MemoryMappedFile.CreateOrOpen(fileName, maxMemorySize);
             m_memoryFileMutex = new Mutex(false, mutexId, out m_created);
         }
-        public TargetMemoryFileWithMutex(string fileName,string fileNameSpecificFormat, int maxMemorySize = 1000000)
+        public TargetMemoryFileWithMutex(string fileName, string fileNameSpecificFormat, int maxMemorySize = 1000000)
         {
             m_fileName = fileName;
             m_maxMemorySize = maxMemorySize;
@@ -104,12 +106,12 @@ using System.Threading;
                 writer.BaseStream.Write(new byte[m_maxMemorySize], 0, (int)m_maxMemorySize);
                 writer.BaseStream.Seek(0, System.IO.SeekOrigin.Begin);
 
-            //NOT TESTED
+                //NOT TESTED
                 writer.Flush();
                 writer.Close();
 
-            //                    Thread.Sleep(1000);
-        }
+                //                    Thread.Sleep(1000);
+            }
         }
 
 
@@ -124,7 +126,7 @@ using System.Threading;
         }
 
 
-    private void MutexAppendText(string textToAdd)
+        private void MutexAppendText(string textToAdd)
         {
 
             string readText;
@@ -140,46 +142,46 @@ using System.Threading;
 
                 writer.Write(nexText);
 
-            //NotTested
+                //NotTested
                 writer.Flush();
                 writer.Close();
 
-        }
+            }
 
 
 
         }
-    public void AppendTextAtStart(string textToAdd)
-    {
-        WaitUntilMutexAllowIt(() =>
+        public void AppendTextAtStart(string textToAdd)
         {
-            MutexAppendTextAtStart(textToAdd);
-        });
+            WaitUntilMutexAllowIt(() =>
+            {
+                MutexAppendTextAtStart(textToAdd);
+            });
 
-    }
-    private void MutexAppendTextAtStart(string textToAdd)
-    {
-        string readText;
-        using (MemoryMappedViewStream stream = m_memoryFile.CreateViewStream())
-        {
-
-            MutexTextRecovering(out readText, false);
-
-            BinaryWriter writer = new BinaryWriter(stream);
-            string nexText = textToAdd+ readText  ;
-            if (nexText.Length > m_maxMemorySize)
-                nexText = nexText.Substring(0, m_maxMemorySize);
-
-            writer.Write(nexText);
-
-            //NotTested
-            writer.Flush();
-            writer.Close();
         }
-    }
+        private void MutexAppendTextAtStart(string textToAdd)
+        {
+            string readText;
+            using (MemoryMappedViewStream stream = m_memoryFile.CreateViewStream())
+            {
+
+                MutexTextRecovering(out readText, false);
+
+                BinaryWriter writer = new BinaryWriter(stream);
+                string nexText = textToAdd + readText;
+                if (nexText.Length > m_maxMemorySize)
+                    nexText = nexText.Substring(0, m_maxMemorySize);
+
+                writer.Write(nexText);
+
+                //NotTested
+                writer.Flush();
+                writer.Close();
+            }
+        }
 
 
-    public void SetText(string text)
+        public void SetText(string text)
         {
             WaitUntilMutexAllowIt(() =>
             {
@@ -196,16 +198,16 @@ using System.Threading;
                 MutexResetMemory();
 
                 BinaryWriter writer = new BinaryWriter(stream);
-                string nexText =  text.Trim();
+                string nexText = text.Trim();
                 if (nexText.Length > m_maxMemorySize)
                     nexText = nexText.Substring(0, m_maxMemorySize);
 
                 writer.Write(nexText);
-            //NotTested
-            writer.Flush();
-            writer.Close();
+                //NotTested
+                writer.Flush();
+                writer.Close();
 
-        }
+            }
 
 
 
@@ -215,7 +217,8 @@ using System.Threading;
         {
 
             string textFound = "";
-            WaitUntilMutexAllowIt(() => {
+            WaitUntilMutexAllowIt(() =>
+            {
                 MutexTextRecovering(out textFound, removeContentAfter);
             });
             readText = textFound;
@@ -247,83 +250,84 @@ using System.Threading;
 
                 //NotTested
                 reader.Close();
-        }
-        }
-
-
-    public void SetAsBytes(byte [] bytes)
-    {
-        WaitUntilMutexAllowIt(() =>
-        {
-            MutexSetAsBytes(bytes);
-        });
-
-    }
-    private void MutexSetAsBytes(byte[] bytes)
-    {
-
-        MutexResetMemory();
-        using (MemoryMappedViewStream stream = m_memoryFile.CreateViewStream())
-        {
-           // MutexResetMemory();
-            BinaryWriter writer = new BinaryWriter(stream);
-            if (bytes.Length > m_maxMemorySize) {
-                UnityEngine.Debug.Log("Humm");
-                throw new Exception("Out of memory size");
             }
-            writer.Write( bytes, 0, bytes.Length);
-
-            //NotTested
-            writer.Flush();
-            writer.Close();
         }
-    }
 
 
-    public void BytesRecovering(out byte [] bytes, bool removeContentAfter = true)
-    {
-        byte [] b = new byte[0];
-        WaitUntilMutexAllowIt(() => {
-            MutexBytesRecovering(out b, removeContentAfter);
-        });
-        bytes = b;
-
-    }
-
-    private void MutexBytesRecovering(out byte[] bytes, bool directremove = true)
-    {
-        bytes = null;
-        using (MemoryMappedViewStream stream = m_memoryFile.CreateViewStream())
+        public void SetAsBytes(byte[] bytes)
         {
-            BinaryReader reader = new BinaryReader(stream);
-            bytes = ReadAllBytes(reader);
-            if (directremove)
+            WaitUntilMutexAllowIt(() =>
             {
-                MutexResetMemory();
-            }
-            //NotTested
-            reader.Close();
-        }
-    }
+                MutexSetAsBytes(bytes);
+            });
 
-    public static byte[] ReadAllBytes( BinaryReader reader)
-    {
-        const int bufferSize = 4096;
-        byte[] result=new byte[0];
-        using (var ms = new MemoryStream())
+        }
+        private void MutexSetAsBytes(byte[] bytes)
         {
-            byte[] buffer = new byte[bufferSize];
-            int count;
-            while ((count = reader.Read(buffer, 0, buffer.Length)) != 0)
-                ms.Write(buffer, 0, count);
-            result= ms.ToArray();
+
+            MutexResetMemory();
+            using (MemoryMappedViewStream stream = m_memoryFile.CreateViewStream())
+            {
+                // MutexResetMemory();
+                BinaryWriter writer = new BinaryWriter(stream);
+                if (bytes.Length > m_maxMemorySize)
+                {
+                    UnityEngine.Debug.Log("Humm");
+                    throw new Exception("Out of memory size");
+                }
+                writer.Write(bytes, 0, bytes.Length);
+
+                //NotTested
+                writer.Flush();
+                writer.Close();
+            }
+        }
+
+
+        public void BytesRecovering(out byte[] bytes, bool removeContentAfter = true)
+        {
+            byte[] b = new byte[0];
+            WaitUntilMutexAllowIt(() =>
+            {
+                MutexBytesRecovering(out b, removeContentAfter);
+            });
+            bytes = b;
+
+        }
+
+        private void MutexBytesRecovering(out byte[] bytes, bool directremove = true)
+        {
+            bytes = null;
+            using (MemoryMappedViewStream stream = m_memoryFile.CreateViewStream())
+            {
+                BinaryReader reader = new BinaryReader(stream);
+                bytes = ReadAllBytes(reader);
+                if (directremove)
+                {
+                    MutexResetMemory();
+                }
+                //NotTested
+                reader.Close();
+            }
+        }
+
+        public static byte[] ReadAllBytes(BinaryReader reader)
+        {
+            const int bufferSize = 4096;
+            byte[] result = new byte[0];
+            using (var ms = new MemoryStream())
+            {
+                byte[] buffer = new byte[bufferSize];
+                int count;
+                while ((count = reader.Read(buffer, 0, buffer.Length)) != 0)
+                    ms.Write(buffer, 0, count);
+                result = ms.ToArray();
 
                 ms.Dispose();
                 ms.Close();
+            }
+            return result;
         }
-            return result ;
+
     }
-
 }
-
-

@@ -2,6 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+namespace UnityMemoryFileCommunication4Unity { 
+
 public class MemoryFileConnectionMono : MonoBehaviour
 {
     public MemoryFileConnection m_connection;
@@ -158,3 +161,4 @@ public class MemoryFileConnectionMono : MonoBehaviour
 }
 
 
+}

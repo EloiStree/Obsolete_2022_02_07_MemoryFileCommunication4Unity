@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityMemoryFileCommunication4Unity;
 
 public class Experiment_InOutMemoryMutex : MonoBehaviour
 {

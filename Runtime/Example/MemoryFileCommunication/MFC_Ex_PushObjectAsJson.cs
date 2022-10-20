@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using UnityMemoryFileCommunication4Unity;
 public class MFC_Ex_PushObjectAsJson : MonoBehaviour
 {
     public MemoryFileConnectionMono m_connection;

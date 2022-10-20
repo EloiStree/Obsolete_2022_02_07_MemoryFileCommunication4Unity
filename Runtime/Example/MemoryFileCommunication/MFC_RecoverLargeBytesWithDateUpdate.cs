@@ -6,6 +6,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 
+using UnityMemoryFileCommunication4Unity;
 public class MFC_RecoverLargeBytesWithDateUpdate : MonoBehaviour
 {
     public MemoryFileConnectionMono m_whereToRecoverBytes;

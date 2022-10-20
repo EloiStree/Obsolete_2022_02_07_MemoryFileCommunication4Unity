@@ -1,0 +1,23 @@
+
+{                                                                                
+  "name": "be.eloistree.memoryfilecommunicationforunity",                              
+  "displayName": "Memory File Communication 4 Unity",                        
+  "version": "0.0.1",                         
+  "unity": "2018.1",                             
+  "unityRelease": "",                             
+  "description": "This tool allows to communicate through Memory-mapped file. (Note that this version works only on Mono and not on IL2CPP).",                         
+  "keywords": ["Script","Tool"],                       
+  "dependencies":{},     
+  "relatedPackages":{},     
+  "samples" : [],     
+  "author" : {
+"name":"",
+"mail":"",
+"url":""},     
+  "repository":{
+"type":"Git",
+"url":"https://github.com/EloiStree/2022_02_07_MemoryFileCommunication4Unity.git",
+"footprint":"",
+"revision":""},     
+  "category": "Script"                   
+} 
